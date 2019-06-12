@@ -1,6 +1,6 @@
 <img width="100" src="http://icons.iconarchive.com/icons/xenatt/the-circle/256/App-Terminal-icon.png">
-Product Hunt Maker CLI
-========
+
+# Product Hunt Maker CLI
 
 CLI tool for Product Hunt Makers
 
@@ -37,7 +37,7 @@ COMMANDS
 # Commands
 <!-- commands -->
 
-### `maker login`
+- ### `maker login`
 login to product hunt
 ```
 USAGE
@@ -52,7 +52,7 @@ EXAMPLE
 ? Enter your access token
 ```
 
-### `maker goal`
+- ### `maker goal`
 see actions for goal
 ```
 USAGE
@@ -71,7 +71,7 @@ EXAMPLE
 (Move up and down to reveal more choices)
 ```
 
-### `maker goal [ACTION]`
+- ### `maker goal [ACTION]`
 Action can be `list` | `create` | `edit` | `complete` | `incomplete`
 ```
 USAGE
@@ -100,7 +100,7 @@ EXAMPLE
 
 ```
 
-### `maker logout`
+- ### `maker logout`
 logout
 ```
 USAGE
@@ -111,7 +111,7 @@ EXAMPLE
     Logout success!
 ```
 
-### `maker help [COMMAND]`
+- ### `maker help [COMMAND]`
 display help for maker
 ```
 USAGE
