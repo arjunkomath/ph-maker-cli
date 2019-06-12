@@ -207,7 +207,7 @@ export class Goal extends Command {
       ])
 
     if (!goal.projectId) {
-      delete goal.projectId
+      goal.projectId = null
     }
 
     const spinner = ora('Updating goal').start()
