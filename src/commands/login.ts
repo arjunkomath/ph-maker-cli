@@ -16,7 +16,8 @@ export class Login extends Command {
 
   async run() {
     this.log(`
-    Login to Product Hunt
+    Login to Product Hunt and get your access token here:
+    https://ph-maker-oauth.arjunkomath.now.sh/
     `)
 
     const answer: ILoginData = await inquirer

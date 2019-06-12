@@ -31,7 +31,7 @@ export const fetchGoals = async (context: any): Promise<FetchGoalResponse> => {
     spinner.stop()
   } catch (error) {
     spinner.stop()
-    context.error('Fetching Goals Failed!', { exit: 1 })
+    context.error('Fetching Goals Failed! Report Issue -> https://github.com/arjunkomath/ph-maker-cli/issues', { exit: 1 })
   }
 
   return goals
@@ -47,7 +47,7 @@ export const fetchProjects = async (context: any): Promise<FetchProjectResponse>
     spinner.stop()
   } catch (error) {
     spinner.stop()
-    context.error('Fetching Projects Failed!', { exit: 1 })
+    context.error('Fetching Projects Failed! Report Issue -> https://github.com/arjunkomath/ph-maker-cli/issues', { exit: 1 })
   }
 
   return projects

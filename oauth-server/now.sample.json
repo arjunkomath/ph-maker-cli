@@ -1,0 +1,17 @@
+{
+  "name": "ph-maker-oauth",
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@now/node"
+    }
+  ],
+  "env": {
+    "PH_API_HOST": "https://api.producthunt.com/",
+    "PH_APP_API_KEY": "",
+    "PH_APP_API_SECRET": "",
+    "PH_APP_REQUESTED_SCOPES": "public private write",
+    "PH_APP_REDIRECT_URI": ""
+  }
+}
