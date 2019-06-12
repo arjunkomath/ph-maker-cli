@@ -21,7 +21,7 @@ const client = async (): Promise<GraphQLClient> => {
   })
 }
 
-export const fetchGoals = async (context: any): Promise<FetchGoalResponse> => {
+export const fetchGoals = async (context: any): Promise<any> => {
   const _client = await client()
 
   const spinner = ora('Fetching Goals').start()
@@ -37,7 +37,7 @@ export const fetchGoals = async (context: any): Promise<FetchGoalResponse> => {
   return goals
 }
 
-export const fetchProjects = async (context: any): Promise<FetchProjectResponse> => {
+export const fetchProjects = async (context: any): Promise<any> => {
   const _client = await client()
 
   const spinner = ora('Fetching Projects').start()

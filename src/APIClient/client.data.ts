@@ -1,3 +1,10 @@
+export interface User {
+  viewer: {
+    user: {
+      name: string;
+    }
+  }
+}
 export interface MakerGoal {
   node: {
     id: string;

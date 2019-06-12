@@ -4,6 +4,7 @@ import db from '../database'
 import { GraphQLClient } from 'graphql-request'
 import { PH_API_URL } from '../config'
 import { ValidateUserQuery } from '../queries'
+import { User } from '../APIClient/client.data';
 
 const inquirer = require('inquirer')
 
@@ -40,7 +41,7 @@ export class Login extends Command {
     })
 
     try {
-      const user = await client.request(ValidateUserQuery)
+      const user: User = await client.request(ValidateUserQuery)
 
       db.set('user.access_token', answer.access_token)
         .write()
