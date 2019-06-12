@@ -12,9 +12,7 @@ interface ILoginData {
 }
 
 export class Login extends Command {
-  static description = `
-  Login to Product Hunt
-  `
+  static description = 'login to product hunt'
 
   async run() {
     this.log(`

@@ -30,14 +30,12 @@ export interface MakerGoal {
 }
 
 export class Goal extends Command {
-  static description = 'Manage Goal'
+  static description = 'manage goal'
 
   static args = [
     {
       name: 'action',
-      required: true,
       description: 'Enter Action',
-      default: 'list',
       options: ['list', 'create', 'complete', 'incomplete'],
     }
   ]
@@ -46,8 +44,14 @@ export class Goal extends Command {
     const client = await APIClient()
 
     const spinner = ora('Fetching Goals').start()
-    const goals = await client.request(ListGoalsQuery)
-    spinner.stop()
+    let goals
+    try {
+      goals = await client.request(ListGoalsQuery)
+      spinner.stop()
+    } catch (error) {
+      spinner.stop()
+      this.error('Fetching Goals Failed!', { exit: 1 })
+    }
 
     this.log(chalk.yellow.bold(`
     What are you working on today?`))
@@ -59,51 +63,47 @@ export class Goal extends Command {
 
     if (todo.length) {
       this.log(chalk.bold(`
-    Pending (${todo.length}/${goals.viewer.goals.edges.length})
+    ${figures.bullet} Pending (${todo.length}/${goals.viewer.goals.edges.length})
       `))
       todo.forEach((goal: MakerGoal) => {
         pending({
-          prefix: chalk.red(`${figures.heart} ${goal.node.cheerCount}`),
+          prefix: '\t',
           message: goal.node.title,
-          suffix: goal.node.project && `(${goal.node.project.name})`
         });
+        this.log(
+          chalk.red(`\t     ${figures.heart} ${goal.node.cheerCount}`) +
+          chalk.gray(`${goal.node.dueAt ? (' | Due - ' + moment(goal.node.dueAt).fromNow()) : ''} ${goal.node.project ? ('| Project - ' + goal.node.project.name) : ''}`))
       });
     }
 
     this.log(chalk.bold(`
-    Completed (${completed.length}/${goals.viewer.goals.edges.length})
+    ${figures.bullet} Completed (${completed.length}/${goals.viewer.goals.edges.length})
       `))
     completed.forEach((goal: MakerGoal) => {
       success({
-        prefix: chalk.red(`${figures.heart} ${goal.node.cheerCount}`),
-        message: chalk.gray.strikethrough(goal.node.title),
-        suffix: goal.node.project && `(${goal.node.project.name})`
+        prefix: '\t',
+        message: chalk.strikethrough(goal.node.title),
       });
+      this.log(
+        chalk.red(`\t     ${figures.heart} ${goal.node.cheerCount}`) +
+        chalk.gray(` | Completed - ${moment(goal.node.completedAt).fromNow()} ${goal.node.project ? ('| Project - ' + goal.node.project.name) : ''}`))
     });
 
     this.log('\n')
-
-    const { action } = await this.promptActions()
-
-    switch (action) {
-      case 'create':
-        await Goal.run(['create'])
-        break
-      case 'mark_done':
-        await Goal.run(['complete'])
-        break
-      case 'mark_not_done':
-        await Goal.run(['incomplete'])
-        break
-    }
   }
 
   async createGoal() {
     const client = await APIClient()
 
+    let projects
     let spinner = ora('Fetching Projects').start()
-    const projects = await client.request(ListProjectsQuery)
-    spinner.stop()
+    try {
+      projects = await client.request(ListProjectsQuery)
+      spinner.stop()
+    } catch (error) {
+      spinner.stop()
+      this.error('Fetching Projects Failed!', { exit: 1 })
+    }
 
     const goal = await inquirer
       .prompt([
@@ -130,8 +130,13 @@ export class Goal extends Command {
     }
 
     spinner = ora('Creating goal').start()
-    await client.request(CreateGoal, { input: goal })
-    spinner.succeed('Goal Created')
+    try {
+      await client.request(CreateGoal, { input: goal })
+      spinner.succeed('Goal Created')
+    } catch (error) {
+      spinner.stop()
+      this.error('Creating goal Failed!', { exit: 1 })
+    }
   }
 
   async markGoalComplete() {
@@ -157,10 +162,15 @@ export class Goal extends Command {
       ])
 
     spinner = ora('Updating goals').start()
-    for (let i = 0; i < goalIds.length; i++) {
-      await client.request(GoalMarkAsComplete, { input: { goalId: goalIds[i] } })
+    try {
+      for (let i = 0; i < goalIds.length; i++) {
+        await client.request(GoalMarkAsComplete, { input: { goalId: goalIds[i] } })
+      }
+      spinner.succeed('Goals updated')
+    } catch (error) {
+      spinner.stop()
+      this.error('Updating goals Failed!', { exit: 1 })
     }
-    spinner.succeed('Goals updated')
   }
 
   async markGoalIncomplete() {
@@ -186,10 +196,15 @@ export class Goal extends Command {
       ])
 
     spinner = ora('Updating goals').start()
-    for (let i = 0; i < goalIds.length; i++) {
-      await client.request(GoalMarkAsIncomplete, { input: { goalId: Number(goalIds[i]) } })
+    try {
+      for (let i = 0; i < goalIds.length; i++) {
+        await client.request(GoalMarkAsIncomplete, { input: { goalId: goalIds[i] } })
+      }
+      spinner.succeed('Goals updated')
+    } catch (error) {
+      spinner.stop()
+      this.error('Updating goals Failed!', { exit: 1 })
     }
-    spinner.succeed('Goals updated')
   }
 
   async promptActions() {
@@ -200,11 +215,12 @@ export class Goal extends Command {
           name: 'action',
           message: 'What do you want to do?',
           choices: [
+            { value: 'list', name: 'List goals' },
             { value: 'create', name: 'Create goal' },
-            { value: 'mark_done', name: 'Mark goal as complete' },
-            { value: 'mark_not_done', name: 'Mark goal as incomplete' },
+            { value: 'complete', name: 'Mark goal as complete' },
+            { value: 'incomplete', name: 'Mark goal as incomplete' },
             new inquirer.Separator(),
-            'Done'
+            'Cancel'
           ]
         }
       ])
@@ -212,6 +228,11 @@ export class Goal extends Command {
 
   async run() {
     const { args } = this.parse(Goal)
+
+    if (!args.action) {
+      const { action } = await this.promptActions()
+      await Goal.run([action])
+    }
 
     switch (args.action) {
       case 'list': await this.listGoals()

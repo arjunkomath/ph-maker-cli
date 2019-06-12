@@ -14,7 +14,7 @@ export interface MakerProject {
 }
 
 export class Project extends Command {
-  static description = 'Manage Projects'
+  static description = 'manage projects'
 
   static args = [
     {
@@ -30,8 +30,15 @@ export class Project extends Command {
     const client = await APIClient()
 
     const spinner = ora('Fetching Projects').start()
-    const projects = await client.request(ListProjectsQuery)
-    spinner.stop()
+    let projects
+
+    try {
+      projects = await client.request(ListProjectsQuery)
+      spinner.stop()
+    } catch (error) {
+      spinner.stop()
+      this.error('Fetching Projects Failed!', { exit: 1 })
+    }
 
     projects.viewer.makerProjects.edges.forEach((project: MakerProject) => {
       const link = terminalLink('Open Project', project.node.url);
