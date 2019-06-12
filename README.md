@@ -10,6 +10,7 @@ CLI tool for Product Hunt Makers
 [![License](https://img.shields.io/npm/l/ph-maker.svg)](https://github.com/arjunkomath/ph-maker-cli/blob/master/package.json)
 
 <!-- toc -->
+* [Product Hunt Maker CLI](#product-hunt-maker-cli)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
@@ -23,96 +24,37 @@ $ maker (-v|--version|version)
 ph-maker/0.0.1 darwin-x64 node-v8.10.0
 $ maker --help [COMMAND]
 USAGE
-  $ maker [COMMAND]
-
-COMMANDS
-  goal     manage goal
-  help     display help for maker
-  login    login to product hunt
-  logout   logout
-  project  manage projects
+  $ maker COMMAND
+...
 ```
 <!-- usagestop -->
 
 # Commands
 <!-- commands -->
+* [`maker goal [ACTION]`](#maker-goal-action)
+* [`maker help [COMMAND]`](#maker-help-command)
+* [`maker login`](#maker-login)
+* [`maker logout`](#maker-logout)
+* [`maker project ACTION`](#maker-project-action)
 
-- ### `maker login`
-login to product hunt
-```
-USAGE
-  $ maker login
+## `maker goal [ACTION]`
 
-EXAMPLE
-  $ maker login
-    
-    Login to Product Hunt and get your access token here:
-    https://ph-maker-oauth.arjunkomath.now.sh/
+manage goal
 
-? Enter your access token
-```
-
-- ### `maker goal`
-see actions for goal
-```
-USAGE
-  $ maker goal
-
-EXAMPLE
-  $ maker goal
-? What do you want to do? (Use arrow keys)
-❯ List goals
-  Create goal
-  Edit goal
-  ──────────────
-  Mark goal as complete
-  Mark goal as incomplete
-  ──────────────
-(Move up and down to reveal more choices)
-```
-
-- ### `maker goal [ACTION]`
-Action can be `list` | `create` | `edit` | `complete` | `incomplete`
 ```
 USAGE
   $ maker goal [ACTION]
 
-EXAMPLE
-  $ maker list
-
-    What are you working on today?
-
-    ● Pending (2/6)
-
-	 ☐  Add tests
-	     ♥ 0
-	 ☐  Submit for Maker Fest
-	     ♥ 1 | Due - in 2 days
-
-    ● Completed (4/6)
-
-	 ✔  Complete CLI tool tomorrow
-	     ♥ 0 | Completed - a day ago
-	 ✔  Build API documentation
-	     ♥ 6 | Completed - a day ago | Project - Push by Techulus
-	 ✔  Build website landing page
-	     ♥ 0 | Completed - 6 months ago | Project - Push by Techulus
-
+ARGUMENTS
+  ACTION  (list|create|edit|complete|incomplete) Enter Action
 ```
 
-- ### `maker logout`
-logout
-```
-USAGE
-  $ maker logout
+_See code: [src/commands/goal.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.0.1/src/commands/goal.ts)_
 
-EXAMPLE
-  $ maker logout
-    Logout success!
-```
+## `maker help [COMMAND]`
 
-- ### `maker help [COMMAND]`
 display help for maker
+
 ```
 USAGE
   $ maker help [COMMAND]
@@ -124,4 +66,41 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
+
+## `maker login`
+
+login to product hunt
+
+```
+USAGE
+  $ maker login
+```
+
+_See code: [src/commands/login.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.0.1/src/commands/login.ts)_
+
+## `maker logout`
+
+logout
+
+```
+USAGE
+  $ maker logout
+```
+
+_See code: [src/commands/logout.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.0.1/src/commands/logout.ts)_
+
+## `maker project ACTION`
+
+manage projects
+
+```
+USAGE
+  $ maker project ACTION
+
+ARGUMENTS
+  ACTION  (list) [default: list] Enter Action
+```
+
+_See code: [src/commands/project.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.0.1/src/commands/project.ts)_
 <!-- commandsstop -->
