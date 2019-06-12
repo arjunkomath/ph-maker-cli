@@ -8,6 +8,16 @@ export const CreateGoal = `
   }
 `
 
+export const UpdateGoal = `
+  mutation ($input: GoalUpdateInput!) {
+    goalUpdate(input: $input) {
+      node {
+        id
+      }
+    }
+  }
+`
+
 export const GoalMarkAsComplete = `
   mutation ($input: GoalMarkAsCompleteInput!) {
     goalMarkAsComplete(input: $input) {

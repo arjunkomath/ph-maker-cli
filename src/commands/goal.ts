@@ -1,9 +1,8 @@
 import Command from '@oclif/command'
 import ora from 'ora'
-import APIClient from '../APIClient'
-import { ListGoalsQuery, ListProjectsQuery } from '../queries'
-import { MakerProject } from './project';
-import { CreateGoal, GoalMarkAsComplete, GoalMarkAsIncomplete } from '../mutations';
+import APIClient, { fetchGoals, fetchProjects } from '../APIClient'
+import { CreateGoal, GoalMarkAsComplete, GoalMarkAsIncomplete, UpdateGoal } from '../mutations';
+import { FetchGoalResponse, MakerGoal, MakerProject, FetchProjectResponse } from '../APIClient/client.data';
 
 const figures = require('figures')
 const chalk = require('chalk')
@@ -14,21 +13,6 @@ signale.config({ displayLabel: false });
 
 const { pending, success } = signale;
 
-export interface MakerGoal {
-  node: {
-    id: string;
-    createdAt: string;
-    title: string;
-    completedAt: string;
-    dueAt: string;
-    cheerCount: number
-    project: {
-      id: string;
-      name: string;
-    };
-  }
-}
-
 export class Goal extends Command {
   static description = 'manage goal'
 
@@ -36,22 +20,12 @@ export class Goal extends Command {
     {
       name: 'action',
       description: 'Enter Action',
-      options: ['list', 'create', 'complete', 'incomplete'],
+      options: ['list', 'create', 'edit', 'complete', 'incomplete'],
     }
   ]
 
   async listGoals() {
-    const client = await APIClient()
-
-    const spinner = ora('Fetching Goals').start()
-    let goals
-    try {
-      goals = await client.request(ListGoalsQuery)
-      spinner.stop()
-    } catch (error) {
-      spinner.stop()
-      this.error('Fetching Goals Failed!', { exit: 1 })
-    }
+    const goals: FetchGoalResponse = await fetchGoals(this)
 
     this.log(chalk.yellow.bold(`
     What are you working on today?`))
@@ -94,16 +68,7 @@ export class Goal extends Command {
 
   async createGoal() {
     const client = await APIClient()
-
-    let projects
-    let spinner = ora('Fetching Projects').start()
-    try {
-      projects = await client.request(ListProjectsQuery)
-      spinner.stop()
-    } catch (error) {
-      spinner.stop()
-      this.error('Fetching Projects Failed!', { exit: 1 })
-    }
+    const projects: FetchProjectResponse = await fetchProjects(this)
 
     const goal = await inquirer
       .prompt([
@@ -116,11 +81,11 @@ export class Goal extends Command {
         {
           type: 'list',
           name: 'projectId',
-          message: 'Assign to project',
+          message: 'Assign to project?',
           choices: [
             ...projects.viewer.makerProjects.edges.map((project: MakerProject) => ({ value: project.node.id, name: project.node.name })),
             new inquirer.Separator(),
-            { value: false, name: 'No, just create the goal!' }
+            { value: false, name: 'No' }
           ],
         }
       ])
@@ -129,7 +94,7 @@ export class Goal extends Command {
       delete goal.projectId
     }
 
-    spinner = ora('Creating goal').start()
+    const spinner = ora('Creating goal').start()
     try {
       await client.request(CreateGoal, { input: goal })
       spinner.succeed('Goal Created')
@@ -142,10 +107,7 @@ export class Goal extends Command {
   async markGoalComplete() {
     const client = await APIClient()
 
-    let spinner = ora('Fetching Goals').start()
-    const goals = await client.request(ListGoalsQuery)
-    spinner.stop()
-
+    const goals: FetchGoalResponse = await fetchGoals(this)
     const { goalIds } = await inquirer
       .prompt([
         {
@@ -161,7 +123,7 @@ export class Goal extends Command {
         }
       ])
 
-    spinner = ora('Updating goals').start()
+    const spinner = ora('Updating goals').start()
     try {
       for (let i = 0; i < goalIds.length; i++) {
         await client.request(GoalMarkAsComplete, { input: { goalId: goalIds[i] } })
@@ -176,10 +138,7 @@ export class Goal extends Command {
   async markGoalIncomplete() {
     const client = await APIClient()
 
-    let spinner = ora('Fetching Goals').start()
-    const goals = await client.request(ListGoalsQuery)
-    spinner.stop()
-
+    const goals: FetchGoalResponse = await fetchGoals(this)
     const { goalIds } = await inquirer
       .prompt([
         {
@@ -195,7 +154,7 @@ export class Goal extends Command {
         }
       ])
 
-    spinner = ora('Updating goals').start()
+    const spinner = ora('Updating goals').start()
     try {
       for (let i = 0; i < goalIds.length; i++) {
         await client.request(GoalMarkAsIncomplete, { input: { goalId: goalIds[i] } })
@@ -204,6 +163,65 @@ export class Goal extends Command {
     } catch (error) {
       spinner.stop()
       this.error('Updating goals Failed!', { exit: 1 })
+    }
+  }
+
+  async editGoal() {
+    const client = await APIClient()
+
+    const goals = await fetchGoals(this)
+    const projects = await fetchProjects(this)
+
+    const { goalIds } = await inquirer
+      .prompt([
+        {
+          type: 'checkbox',
+          name: 'goalIds',
+          message: "Select Goal to edit",
+          validate: (answer: [any]) => answer.length === 1,
+          choices: [
+            ...goals.viewer.goals.edges
+              .map((goal: MakerGoal) => ({ value: goal.node.id, name: goal.node.title })),
+          ]
+        }
+      ])
+
+    const goal = await inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'title',
+          message: "What's your new goal",
+          validate: (value: string) => !!value.trim()
+        },
+        {
+          type: 'list',
+          name: 'projectId',
+          message: 'Assign to project?',
+          choices: [
+            ...projects.viewer.makerProjects.edges.map((project: MakerProject) => ({ value: project.node.id, name: project.node.name })),
+            new inquirer.Separator(),
+            { value: false, name: 'No' }
+          ],
+        }
+      ])
+
+    if (!goal.projectId) {
+      delete goal.projectId
+    }
+
+    const spinner = ora('Updating goal').start()
+    try {
+      await client.request(UpdateGoal, {
+        input: {
+          goalId: goalIds[0],
+          ...goal
+        }
+      })
+      spinner.succeed('Goal updated')
+    } catch (error) {
+      spinner.stop()
+      this.error('Updating goal Failed!', { exit: 1 })
     }
   }
 
@@ -217,6 +235,8 @@ export class Goal extends Command {
           choices: [
             { value: 'list', name: 'List goals' },
             { value: 'create', name: 'Create goal' },
+            { value: 'edit', name: 'Edit goal' },
+            new inquirer.Separator(),
             { value: 'complete', name: 'Mark goal as complete' },
             { value: 'incomplete', name: 'Mark goal as incomplete' },
             new inquirer.Separator(),
@@ -238,6 +258,8 @@ export class Goal extends Command {
       case 'list': await this.listGoals()
         break
       case 'create': await this.createGoal()
+        break
+      case 'edit': await this.editGoal()
         break
       case 'complete': await this.markGoalComplete()
         break

@@ -3,16 +3,7 @@ import ora from 'ora'
 import terminalLink from 'terminal-link'
 import APIClient from '../APIClient'
 import { ListProjectsQuery } from '../queries'
-
-export interface MakerProject {
-  node: {
-    id: string;
-    name: string;
-    tagline: string;
-    url: string;
-  }
-}
-
+import { MakerProject } from '../APIClient/client.data';
 export class Project extends Command {
   static description = 'manage projects'
 
