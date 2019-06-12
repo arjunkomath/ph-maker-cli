@@ -1,4 +1,5 @@
-ph-maker
+<img width="100" src="http://icons.iconarchive.com/icons/xenatt/the-circle/256/App-Terminal-icon.png">
+Product Hunt Maker CLI
 ========
 
 CLI tool for Product Hunt Makers
@@ -22,39 +23,96 @@ $ maker (-v|--version|version)
 ph-maker/0.0.1 darwin-x64 node-v8.10.0
 $ maker --help [COMMAND]
 USAGE
-  $ maker COMMAND
-...
+  $ maker [COMMAND]
+
+COMMANDS
+  goal     manage goal
+  help     display help for maker
+  login    login to product hunt
+  logout   logout
+  project  manage projects
 ```
 <!-- usagestop -->
+
 # Commands
 <!-- commands -->
-* [`maker hello [FILE]`](#maker-hello-file)
-* [`maker help [COMMAND]`](#maker-help-command)
 
-## `maker hello [FILE]`
-
-describe the command here
-
+### `maker login`
+login to product hunt
 ```
 USAGE
-  $ maker hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  $ maker login
 
 EXAMPLE
-  $ maker hello
-  hello world from ./src/hello.ts!
+  $ maker login
+    
+    Login to Product Hunt and get your access token here:
+    https://ph-maker-oauth.arjunkomath.now.sh/
+
+? Enter your access token
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.0.1/src/commands/hello.ts)_
+### `maker goal`
+see actions for goal
+```
+USAGE
+  $ maker goal
 
-## `maker help [COMMAND]`
+EXAMPLE
+  $ maker goal
+? What do you want to do? (Use arrow keys)
+❯ List goals
+  Create goal
+  Edit goal
+  ──────────────
+  Mark goal as complete
+  Mark goal as incomplete
+  ──────────────
+(Move up and down to reveal more choices)
+```
 
+### `maker goal [ACTION]`
+Action can be `list` | `create` | `edit` | `complete` | `incomplete`
+```
+USAGE
+  $ maker goal [ACTION]
+
+EXAMPLE
+  $ maker list
+
+    What are you working on today?
+
+    ● Pending (2/6)
+
+	 ☐  Add tests
+	     ♥ 0
+	 ☐  Submit for Maker Fest
+	     ♥ 1 | Due - in 2 days
+
+    ● Completed (4/6)
+
+	 ✔  Complete CLI tool tomorrow
+	     ♥ 0 | Completed - a day ago
+	 ✔  Build API documentation
+	     ♥ 6 | Completed - a day ago | Project - Push by Techulus
+	 ✔  Build website landing page
+	     ♥ 0 | Completed - 6 months ago | Project - Push by Techulus
+
+```
+
+### `maker logout`
+logout
+```
+USAGE
+  $ maker logout
+
+EXAMPLE
+  $ maker logout
+    Logout success!
+```
+
+### `maker help [COMMAND]`
 display help for maker
-
 ```
 USAGE
   $ maker help [COMMAND]
@@ -66,5 +124,4 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
 <!-- commandsstop -->
