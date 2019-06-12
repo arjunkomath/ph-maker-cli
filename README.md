@@ -104,3 +104,13 @@ ARGUMENTS
 
 _See code: [src/commands/project.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.0.1/src/commands/project.ts)_
 <!-- commandsstop -->
+
+## Contribute
+Feature Request, Bugs and Ideas can be added [here.](https://github.com/arjunkomath/ph-maker-cli/issues)
+
+## Thanks
+* [Product Hunt Team :)](https://www.producthunt.com/about)
+* [oclif: Node.JS Open CLI Framework](https://github.com/oclif/oclif)
+
+## About Author
+* Built with <3 by [Arjun](https://twitter.com/arjunz) / [arjunkomath@gmail.com](mailto:arjunkomath@gmail.com)
