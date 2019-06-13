@@ -21,7 +21,7 @@ $ npm install -g ph-maker
 $ maker COMMAND
 running command...
 $ maker (-v|--version|version)
-ph-maker/0.1.0 darwin-x64 node-v8.10.0
+ph-maker/0.1.1 darwin-x64 node-v8.10.0
 $ maker --help [COMMAND]
 USAGE
   $ maker COMMAND
@@ -49,7 +49,7 @@ ARGUMENTS
   ACTION  (list|create|edit|complete|incomplete) Enter Action
 ```
 
-_See code: [src/commands/goal.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.0/src/commands/goal.ts)_
+_See code: [src/commands/goal.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.1/src/commands/goal.ts)_
 
 ## `maker help [COMMAND]`
 
@@ -77,7 +77,7 @@ USAGE
   $ maker login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.0/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.1/src/commands/login.ts)_
 
 ## `maker logout`
 
@@ -88,7 +88,7 @@ USAGE
   $ maker logout
 ```
 
-_See code: [src/commands/logout.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.0/src/commands/logout.ts)_
+_See code: [src/commands/logout.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.1/src/commands/logout.ts)_
 
 ## `maker project ACTION`
 
@@ -102,7 +102,7 @@ ARGUMENTS
   ACTION  (list) [default: list] Enter Action
 ```
 
-_See code: [src/commands/project.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.0/src/commands/project.ts)_
+_See code: [src/commands/project.ts](https://github.com/arjunkomath/ph-maker-cli/blob/v0.1.1/src/commands/project.ts)_
 <!-- commandsstop -->
 
 ## Contribute
