@@ -44,7 +44,7 @@ export class Goal extends Command {
         });
         this.log(
           chalk.red(`\t     ${figures.heart} ${goal.node.cheerCount}`) +
-          chalk.gray(`${goal.node.dueAt ? (' | Due - ' + moment(goal.node.dueAt).fromNow()) : ''} ${goal.node.project ? ('| Project - ' + goal.node.project.name) : ''}`))
+          chalk.gray(`${goal.node.dueAt ? (' | Due - ' + moment(goal.node.dueAt).fromNow()) : ''} ${goal.node.project ? ('\t| Project - ' + goal.node.project.name) : ''}`))
       });
     }
 
@@ -58,7 +58,7 @@ export class Goal extends Command {
       });
       this.log(
         chalk.red(`\t     ${figures.heart} ${goal.node.cheerCount}`) +
-        chalk.gray(` | Completed - ${moment(goal.node.completedAt).fromNow()} ${goal.node.project ? ('| Project - ' + goal.node.project.name) : ''}`))
+        chalk.gray(` | Completed - ${moment(goal.node.completedAt).fromNow()} ${goal.node.project ? ('\t| Project - ' + goal.node.project.name) : ''}`))
     });
 
     this.log('\n')

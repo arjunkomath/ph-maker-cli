@@ -23,7 +23,7 @@ export const ListProjectsQuery = `{
 
 export const ListGoalsQuery = `{
   viewer {
-    goals {
+    goals(first: 15) {
       edges {
         node {
           id

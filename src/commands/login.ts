@@ -7,6 +7,7 @@ import { ValidateUserQuery } from '../queries'
 import { User } from '../APIClient/client.data';
 
 const inquirer = require('inquirer')
+const open = require('open')
 
 interface ILoginData {
   access_token: string
@@ -20,6 +21,8 @@ export class Login extends Command {
     Login to Product Hunt and get your access token here:
     https://ph-maker-oauth.arjunkomath.now.sh/
     `)
+
+    await open('https://ph-maker-oauth.arjunkomath.now.sh/')
 
     const answer: ILoginData = await inquirer
       .prompt([{
