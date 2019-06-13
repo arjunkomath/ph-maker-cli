@@ -1,7 +1,7 @@
 {
   "name": "ph-maker",
   "description": "CLI tool for Product Hunt Makers",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "author": "Arjun Komath @arjunkomath",
   "bin": {
     "maker": "./bin/run"
