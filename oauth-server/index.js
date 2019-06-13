@@ -33,9 +33,7 @@ app.get('/', async (req, res) => {
       grant_type: "authorization_code"
     });
 
-    return res.json({
-      accessToken
-    });
+    return res.send(`<h4>Your Access Token: <b>${accessToken}</b></h4>`);
   }
 
   return res.redirect(
