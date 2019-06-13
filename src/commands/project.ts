@@ -16,9 +16,9 @@ export class Project extends Command {
   ]
 
   async listProjects() {
-    const projects = await fetchProjects(this)
+    const projects: MakerProject[] = await fetchProjects(this)
 
-    projects.viewer.makerProjects.edges.forEach((project: MakerProject) => {
+    projects.forEach((project: MakerProject) => {
       const link = terminalLink('Open Project', project.node.url);
       this.log(`
       => ${project.node.name} (${project.node.tagline})

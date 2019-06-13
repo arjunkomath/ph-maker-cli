@@ -2,7 +2,7 @@ import Command from '@oclif/command'
 import ora from 'ora'
 import APIClient, { fetchGoals, fetchProjects } from '../APIClient'
 import { CreateGoal, GoalMarkAsComplete, GoalMarkAsIncomplete, UpdateGoal } from '../mutations';
-import { FetchGoalResponse, MakerGoal, MakerProject, FetchProjectResponse } from '../APIClient/client.data';
+import { MakerGoal, MakerProject } from '../APIClient/client.data';
 
 const figures = require('figures')
 const chalk = require('chalk')
@@ -25,19 +25,17 @@ export class Goal extends Command {
   ]
 
   async listGoals() {
-    const goals: FetchGoalResponse = await fetchGoals(this)
+    const goals: MakerGoal[] = await fetchGoals(this)
 
     this.log(chalk.yellow.bold(`
     What are you working on today?`))
 
-    const todo = goals.viewer.goals.edges
-      .filter((goal: MakerGoal) => !goal.node.completedAt)
-    const completed = goals.viewer.goals.edges
-      .filter((goal: MakerGoal) => goal.node.completedAt)
+    const todo = goals.filter((goal: MakerGoal) => !goal.node.completedAt)
+    const completed = goals.filter((goal: MakerGoal) => goal.node.completedAt)
 
     if (todo.length) {
       this.log(chalk.bold(`
-    ${figures.bullet} Pending (${todo.length}/${goals.viewer.goals.edges.length})
+    ${figures.bullet} Pending (${todo.length}/${goals.length})
       `))
       todo.forEach((goal: MakerGoal) => {
         pending({
@@ -51,7 +49,7 @@ export class Goal extends Command {
     }
 
     this.log(chalk.bold(`
-    ${figures.bullet} Completed (${completed.length}/${goals.viewer.goals.edges.length})
+    ${figures.bullet} Completed (${completed.length}/${goals.length})
       `))
     completed.forEach((goal: MakerGoal) => {
       success({
@@ -68,7 +66,7 @@ export class Goal extends Command {
 
   async createGoal() {
     const client = await APIClient()
-    const projects: FetchProjectResponse = await fetchProjects(this)
+    const projects: MakerProject[] = await fetchProjects(this)
 
     const goal = await inquirer
       .prompt([
@@ -83,7 +81,7 @@ export class Goal extends Command {
           name: 'projectId',
           message: 'Assign to project?',
           choices: [
-            ...projects.viewer.makerProjects.edges.map((project: MakerProject) => ({ value: project.node.id, name: project.node.name })),
+            ...projects.map((project: MakerProject) => ({ value: project.node.id, name: project.node.name })),
             new inquirer.Separator(),
             { value: false, name: 'No' }
           ],
@@ -107,7 +105,7 @@ export class Goal extends Command {
   async markGoalComplete() {
     const client = await APIClient()
 
-    const goals: FetchGoalResponse = await fetchGoals(this)
+    const goals: MakerGoal[] = await fetchGoals(this)
     const { goalIds } = await inquirer
       .prompt([
         {
@@ -116,7 +114,7 @@ export class Goal extends Command {
           message: "Select Goals",
           validate: (answer: [any]) => answer.length >= 1,
           choices: [
-            ...goals.viewer.goals.edges
+            ...goals
               .filter((goal: MakerGoal) => !goal.node.completedAt)
               .map((goal: MakerGoal) => ({ value: goal.node.id, name: goal.node.title })),
           ]
@@ -138,7 +136,7 @@ export class Goal extends Command {
   async markGoalIncomplete() {
     const client = await APIClient()
 
-    const goals: FetchGoalResponse = await fetchGoals(this)
+    const goals: MakerGoal[] = await fetchGoals(this)
     const { goalIds } = await inquirer
       .prompt([
         {
@@ -147,7 +145,7 @@ export class Goal extends Command {
           message: "Select Goals",
           validate: (answer: [any]) => answer.length >= 1,
           choices: [
-            ...goals.viewer.goals.edges
+            ...goals
               .filter((goal: MakerGoal) => goal.node.completedAt)
               .map((goal: MakerGoal) => ({ value: goal.node.id, name: goal.node.title })),
           ]
@@ -180,7 +178,7 @@ export class Goal extends Command {
           message: "Select Goal to edit",
           validate: (answer: [any]) => answer.length === 1,
           choices: [
-            ...goals.viewer.goals.edges
+            ...goals
               .map((goal: MakerGoal) => ({ value: goal.node.id, name: goal.node.title })),
           ]
         }
@@ -199,7 +197,7 @@ export class Goal extends Command {
           name: 'projectId',
           message: 'Assign to project?',
           choices: [
-            ...projects.viewer.makerProjects.edges.map((project: MakerProject) => ({ value: project.node.id, name: project.node.name })),
+            ...projects.map((project: MakerProject) => ({ value: project.node.id, name: project.node.name })),
             new inquirer.Separator(),
             { value: false, name: 'No' }
           ],

@@ -5,7 +5,12 @@ import db from '../database'
 
 import { Login } from '../commands/login'
 import { ListGoalsQuery, ListProjectsQuery } from '../queries';
-import { FetchGoalResponse, FetchProjectResponse } from './client.data';
+import { FetchGoalResponse, FetchProjectResponse, MakerGoal, MakerProject } from './client.data';
+
+// Check for updates
+const updateNotifier = require('update-notifier');
+const pkg = require('../../package.json');
+updateNotifier({ pkg }).notify();
 
 const client = async (): Promise<GraphQLClient> => {
   const access_token = db.get('user.access_token').value()
@@ -21,36 +26,36 @@ const client = async (): Promise<GraphQLClient> => {
   })
 }
 
-export const fetchGoals = async (context: any): Promise<any> => {
+export const fetchGoals = async (context: any): Promise<MakerGoal[]> => {
   const _client = await client()
 
   const spinner = ora('Fetching Goals').start()
-  let goals
   try {
-    goals = await _client.request(ListGoalsQuery)
+    const goals: FetchGoalResponse = await _client.request(ListGoalsQuery)
     spinner.stop()
+    return goals.viewer.goals.edges
   } catch (error) {
     spinner.stop()
     context.error('Fetching Goals Failed! Report Issue -> https://github.com/arjunkomath/ph-maker-cli/issues', { exit: 1 })
   }
 
-  return goals
+  return []
 }
 
-export const fetchProjects = async (context: any): Promise<any> => {
+export const fetchProjects = async (context: any): Promise<MakerProject[]> => {
   const _client = await client()
 
   const spinner = ora('Fetching Projects').start()
-  let projects
   try {
-    projects = await _client.request(ListProjectsQuery)
+    const projects: FetchProjectResponse = await _client.request(ListProjectsQuery)
     spinner.stop()
+    return projects.viewer.makerProjects.edges
   } catch (error) {
     spinner.stop()
     context.error('Fetching Projects Failed! Report Issue -> https://github.com/arjunkomath/ph-maker-cli/issues', { exit: 1 })
   }
 
-  return projects
+  return []
 }
 
 export default client
