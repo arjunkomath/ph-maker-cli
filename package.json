@@ -1,7 +1,7 @@
 {
   "name": "ph-maker",
   "description": "CLI tool for Product Hunt Makers",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Arjun Komath @arjunkomath",
   "bin": {
     "maker": "./bin/run"
@@ -15,6 +15,7 @@
     "figures": "3.0.0",
     "graphql-request": "1.8.2",
     "inquirer": "6.3.1",
+    "lodash": "4.17.15",
     "lowdb": "1.0.0",
     "make-dir": "3.0.0",
     "moment": "2.24.0",
