@@ -15,7 +15,7 @@
     "figures": "3.0.0",
     "graphql-request": "1.8.2",
     "inquirer": "6.3.1",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "lowdb": "1.0.0",
     "make-dir": "3.0.0",
     "moment": "2.24.0",
